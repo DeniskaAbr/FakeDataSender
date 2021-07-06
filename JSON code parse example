@@ -1,0 +1,162 @@
+
+/*
+
+package main
+
+import (
+"encoding/json"
+"fmt"
+"log"
+)
+
+func main() {
+
+	jsonData1 := []byte(`{
+		"cassette1":[
+			{
+				"loaded": 300,
+				"rejected": 1,
+				"dispensed": 115,
+				"currency": 810,
+				"denomination": 100,
+				"status": "OK"
+			}
+		],
+		"cassette2":[
+			{
+				"loaded": 500,
+				"rejected": 5,
+				"dispensed": 14,
+				"currency": 810,
+				"denomination": 500,
+				"status": "ERROR"
+			}
+		]
+	}
+	`)
+
+	jsonData := []byte(`
+	{
+        "cash_out":[
+            {
+                "cassette1":[
+                    {
+                        "loaded": 300,
+                        "rejected": 1,
+                        "dispensed": 115,
+                        "currency": 810,
+                        "denomination": 100,
+                        "status": "OK"
+                    }
+                ],
+                "cassette2":[
+                    {
+                        "loaded": 500,
+                        "rejected": 5,
+                        "dispensed": 14,
+                        "currency": 810,
+                        "denomination": 500,
+                        "status": "ERROR"
+                    }
+                ]
+            }
+        ],
+        "cash_in":[
+            {
+                "validator_firmware_template": "04.07.123",
+                "status": "OK",
+                "accepted": 715
+            }
+        ],
+        "motor_CardReader":[
+            {
+                "firmware": "04.07.123",
+                "status": "OK"
+            }
+        ],
+        "contactless_CardReader":[
+            {
+                "firmware": "04.07.123",
+                "status": "ERROR"
+            }
+        ],
+        "epp_PinPad":[
+            {
+                "serial_key": "RE86329TS-skj68273",
+                "firmware": "K98692839",
+                "status": "OK"
+            }
+        ],
+        "safety_device":[
+            {
+                "status": "блокировка отключена",
+                "safe_door": "closed"
+            }
+        ]
+    }`)
+
+	var cass Cassettes
+	err := json.Unmarshal(jsonData1, &cass)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var basket ATM_Data
+	err = json.Unmarshal(jsonData, &basket)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(basket.CashOut)
+	fmt.Println("/////")
+	fmt.Println(basket.CashIn)
+
+}
+
+type Cassettes struct {
+	Cassettes []map[string]struct {
+		Loaded       int    `json:"loaded"`
+		Rejected     int    `json:"rejected"`
+		Dispensed    int    `json:"dispensed"`
+		Currency     int    `json:"currency"`
+		Denomination int    `json:"denomination"`
+		Status       string `json:"status"`
+	}
+}
+
+type Cassette struct {
+	Loaded       int    `json:"loaded"`
+	Rejected     int    `json:"rejected"`
+	Dispensed    int    `json:"dispensed"`
+	Currency     int    `json:"currency"`
+	Denomination int    `json:"denomination"`
+	Status       string `json:"status"`
+}
+
+type ATM_Data struct {
+	CashOut []map[string]interface{} `json:"cash_out"`
+	CashIn  []struct {
+		ValidatorFirmwareTemplate string `json:"validator_firmware_template"`
+		Status                    string `json:"status"`
+		Accepted                  int    `json:"accepted"`
+	} `json:"cash_in"`
+	MotorCardReader []struct {
+		Firmware string `json:"firmware"`
+		Status   string `json:"status"`
+	} `json:"motor_CardReader"`
+	ContactlessCardReader []struct {
+		Firmware string `json:"firmware"`
+		Status   string `json:"status"`
+	} `json:"contactless_CardReader"`
+	EppPinPad []struct {
+		SerialKey string `json:"serial_key"`
+		Firmware  string `json:"firmware"`
+		Status    string `json:"status"`
+	} `json:"epp_PinPad"`
+	SafetyDevice []struct {
+		Status   string `json:"status"`
+		SafeDoor string `json:"safe_door"`
+	} `json:"safety_device"`
+}
+
+*/
