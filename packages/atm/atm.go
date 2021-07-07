@@ -64,21 +64,21 @@ type SafetyDevice struct {
 func (cst *Cassette) Load() {
 	// loaded reset loaded to maximum value
 
-	cst.Loaded = cst.MaximumLoadValue
-
-	if cst.DefaultDenominationValue == 0 {
-		cst.DefaultDenominationValue = 100
-		cst.Denomination = cst.DefaultDenominationValue
-	} else {
-		cst.Denomination = cst.DefaultDenominationValue
-	}
-
 	if cst.DefaultCurrencyCode == 0 {
 		cst.DefaultCurrencyCode = CurrencyValue.Rouble
-		cst.Currency = cst.DefaultCurrencyCode
-	} else {
-		cst.Currency = cst.DefaultCurrencyCode
 	}
+	if cst.DefaultDenominationValue == 0 {
+		cst.DefaultDenominationValue = 100
+	}
+	if cst.MaximumLoadValue == 0 {
+		cst.MaximumLoadValue = 300
+
+	}
+
+	cst.Loaded = cst.MaximumLoadValue
+	cst.Denomination = cst.DefaultDenominationValue
+	cst.Currency = cst.DefaultCurrencyCode
+
 	cst.Rejected = 0
 	cst.Dispensed = 0
 	cst.Status = okStatus

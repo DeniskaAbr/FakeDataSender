@@ -8,11 +8,16 @@ import (
 	"time"
 )
 
+const tickTask = time.Hour * 1
+
 func init() {
+
 }
+
 func main() {
+
 	atm1 := atm.NewATM()
-	_ = atm1.SetATMNumber(123456789)
+	err := atm1.SetATMNumber(123456789)
 	atm1.CashOut[0].DefaultDenominationValue = 50
 	atm1.CashOut[1].DefaultDenominationValue = 100
 	atm1.CashOut[2].DefaultDenominationValue = 1000
@@ -27,8 +32,22 @@ func main() {
 		atm1.CashOut[i].Load()
 	}
 
+	fmt.Println(atm1)
+
+	err = atm1.Dispense(150)
+	fmt.Println(err)
+	err = atm1.Dispense(150)
+	fmt.Println(err)
+
+	fmt.Println(atm1)
+
+	str := tojson.PackToJSON(atm1)
+	if len(str) != 0 {
+		fmt.Println(str)
+	}
+
 	atm2 := atm.NewATM()
-	_ = atm1.SetATMNumber(987654321)
+	_ = atm2.SetATMNumber(987654321)
 	atm2.CashOut[0].DefaultDenominationValue = 50
 	atm2.CashOut[1].DefaultDenominationValue = 100
 	atm2.CashOut[2].DefaultDenominationValue = 1000
@@ -42,13 +61,14 @@ func main() {
 	for i := range atm2.CashOut {
 		atm2.CashOut[i].Load()
 	}
+	atm2.CashOut[0].Loaded = 3
 
 	t1 := ticker.NewTicker(atm1)
 	t2 := ticker.NewTicker(atm2)
 	go t2.Run()
 	go t1.Run()
 
-	time.Sleep(time.Hour * 4)
+	time.Sleep(tickTask)
 	fmt.Println("Просим тикер остановиться")
 	t1.Ticker.Stop()
 	t1.Ticker.Stop()
@@ -57,14 +77,6 @@ func main() {
 	fmt.Println("вышли в основной код")
 	fmt.Println(atm1.CashOut[0].Loaded)
 	fmt.Println(atm2.CashOut[0].Loaded)
-
-	qq := atm1.AvailableCash()
-	ww := atm2.AvailableCash()
-	fmt.Println(qq)
-	fmt.Println(ww)
-
-	fmt.Println(tojson.PackToJSON(atm1))
-	fmt.Println(tojson.PackToJSON(atm2))
 }
 
 /*

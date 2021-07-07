@@ -2,6 +2,7 @@ package atm
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"sort"
 )
@@ -10,30 +11,30 @@ func (atm *ATM) Dice() {
 	var info string
 	for i, cassette := range atm.CashOut {
 		if cassette.MaximumLoadValue > 0 && cassette.Status == "OK" {
-			if (float64(cassette.Loaded)/float64(cassette.MaximumLoadValue))*100.0 < 25.0 {
-				fmt.Println(">>>>>>>>")
-				fmt.Println("cassette low")
-				fmt.Println("<<<<<<<<")
+			loadPercent := (float64(cassette.Loaded) / float64(cassette.MaximumLoadValue)) * 100.0
+			if loadPercent < 25.0 {
 				atm.CashOut[i].StatusSwitch()
 				info = "cassette error"
+				s := fmt.Sprintf(`%v cassette %v load low %g percent`, atm.AtmNumber, i+1, loadPercent)
+				log.Println(s)
 			}
 		}
 		if cassette.Status == "ERROR" && atm.SafetyDevice.SafeDoor == "closed" && len(info) == 0 {
-			fmt.Println(">>>>>>>>")
-			fmt.Println("open safe")
-			fmt.Println("<<<<<<<<")
+
 			atm.SafetyDevice.SafeDoor = "open"
 			info = "safe open"
+			s := fmt.Sprintf("%v safe open ", atm.AtmNumber)
+			log.Println(s)
 		}
 		if cassette.Status == "ERROR" && atm.SafetyDevice.SafeDoor == "open" && len(info) == 0 {
 			for i := range atm.CashOut {
 				atm.CashOut[i].Load()
 			}
-			fmt.Println(">>>>>>>>")
-			fmt.Println("load all cassettes")
-			fmt.Println("<<<<<<<<")
-			atm.ResetAllErrors()
+
 			info = "atm loaded"
+			s := fmt.Sprintf("%v all cassettes reloaded", atm.AtmNumber)
+			log.Println(s)
+
 		}
 	}
 
@@ -52,18 +53,17 @@ func (atm *ATM) Dice() {
 	case "safe open":
 	case "atm loaded":
 		atm.SafetyDevice.SafeDoor = "closed"
-		fmt.Println(">>>>>>>>")
-		fmt.Println("close safe")
-		fmt.Println("<<<<<<<<")
+		atm.ResetAllErrors()
+		s := fmt.Sprintf("%v safe closed", atm.AtmNumber)
+		log.Println(s)
 
 	default:
 		if !atm.Error() {
 			randomCash := rand.Intn(500)
 			atm.Dispense(randomCash * cassettesInfo[len(cassettesInfo)-1].Denomination)
-			fmt.Println(">>>>>>>>")
-			fmt.Println("Dispence")
-			fmt.Println(randomCash * cassettesInfo[len(cassettesInfo)-1].Denomination)
-			fmt.Println("<<<<<<<<")
+			summa := randomCash * cassettesInfo[len(cassettesInfo)-1].Denomination
+			s := fmt.Sprintf("%v dispence %v", atm.AtmNumber, summa)
+			log.Println(s)
 		}
 	}
 }

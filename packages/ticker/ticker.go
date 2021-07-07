@@ -3,11 +3,12 @@ package ticker
 import (
 	"FakeDataSender/packages/atm"
 	"FakeDataSender/packages/tojson"
-	"fmt"
+	_ "FakeDataSender/packages/tojson"
+	_ "fmt"
 	"time"
 )
 
-const tickTimeout = 100
+const tickTimeout = 1000
 
 type Ticker struct {
 	tickTimeout int
@@ -24,12 +25,15 @@ func NewTicker(a *atm.ATM) *Ticker {
 
 func (t *Ticker) Run() {
 	go func() {
-		for ti := range t.Ticker.C {
-			fmt.Println("Tick at", ti)
+		for /* ti */ _ = range t.Ticker.C {
+			// fmt.Println("Tick at", ti)
 
 			// ATM operations
 			t.atm.Dice()
-			fmt.Println(tojson.PackToJSON(t.atm))
+
+			tojson.SaveJSON(t.atm, "")
+			tojson.SaveToZabbixSenderData(t.atm, "")
+			// fmt.Println(tojson.PackToJSON(t.atm))
 		}
 	}()
 }
