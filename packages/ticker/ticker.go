@@ -3,8 +3,6 @@ package ticker
 import (
 	"FakeDataSender/packages/atm"
 	"FakeDataSender/packages/tojson"
-	_ "FakeDataSender/packages/tojson"
-	_ "fmt"
 	"time"
 )
 
@@ -23,7 +21,7 @@ func NewTicker(a *atm.ATM) *Ticker {
 	return t
 }
 
-func (t *Ticker) Run() {
+func (t *Ticker) Run(p string) {
 	go func() {
 		for /* ti */ _ = range t.Ticker.C {
 			// fmt.Println("Tick at", ti)
@@ -32,7 +30,7 @@ func (t *Ticker) Run() {
 			t.atm.Dice()
 
 			tojson.SaveJSON(t.atm, "")
-			tojson.SaveToZabbixSenderData(t.atm, "")
+			tojson.SaveToZabbixSenderData(t.atm, p)
 			// fmt.Println(tojson.PackToJSON(t.atm))
 		}
 	}()

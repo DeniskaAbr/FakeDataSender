@@ -57,8 +57,6 @@ func SaveJSON(a *atm.ATM, path string) {
 
 }
 
-
-
 func SaveToZabbixSenderData(a *atm.ATM, path string) {
 	if len(path) == 0 {
 		path = outPath

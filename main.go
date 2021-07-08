@@ -3,12 +3,13 @@ package main
 import (
 	"FakeDataSender/packages/atm"
 	"FakeDataSender/packages/ticker"
-	"FakeDataSender/packages/tojson"
-	"fmt"
+	"flag"
+		"log"
 	"time"
 )
 
-const tickTask = time.Hour * 1
+
+
 
 func init() {
 
@@ -16,8 +17,21 @@ func init() {
 
 func main() {
 
+	var timeout int
+	var path string
+
+	flag.IntVar(&timeout, "timeout", 1, "work timeout in minutes")
+	flag.StringVar(&path, "path", "./", "output path")
+
+	flag.Parse()
+
+
+	waitTime :=  time.Minute * time.Duration(timeout)
+
+
+	// init data for ATM 1
 	atm1 := atm.NewATM()
-	err := atm1.SetATMNumber(123456789)
+	_ = atm1.SetATMNumber(123456789)
 	atm1.CashOut[0].DefaultDenominationValue = 50
 	atm1.CashOut[1].DefaultDenominationValue = 100
 	atm1.CashOut[2].DefaultDenominationValue = 1000
@@ -32,20 +46,7 @@ func main() {
 		atm1.CashOut[i].Load()
 	}
 
-	fmt.Println(atm1)
-
-	err = atm1.Dispense(150)
-	fmt.Println(err)
-	err = atm1.Dispense(150)
-	fmt.Println(err)
-
-	fmt.Println(atm1)
-
-	str := tojson.PackToJSON(atm1)
-	if len(str) != 0 {
-		fmt.Println(str)
-	}
-
+	// init data for ATM 2
 	atm2 := atm.NewATM()
 	_ = atm2.SetATMNumber(987654321)
 	atm2.CashOut[0].DefaultDenominationValue = 50
@@ -61,22 +62,42 @@ func main() {
 	for i := range atm2.CashOut {
 		atm2.CashOut[i].Load()
 	}
-	atm2.CashOut[0].Loaded = 3
+
+	// init data for ATM 3
+	atm3 := atm.NewATM()
+	_ = atm3.SetATMNumber(123404321)
+	atm3.CashOut[0].DefaultDenominationValue = 50
+	atm3.CashOut[1].DefaultDenominationValue = 100
+	atm3.CashOut[2].DefaultDenominationValue = 1000
+	atm3.CashOut[3].DefaultDenominationValue = 5000
+
+	atm3.CashOut[0].MaximumLoadValue = 500
+	atm3.CashOut[1].MaximumLoadValue = 500
+	atm3.CashOut[2].MaximumLoadValue = 300
+	atm3.CashOut[3].MaximumLoadValue = 300
+
+	for i := range atm3.CashOut {
+		atm3.CashOut[i].Load()
+	}
+
+// add ticker for all ATMs
 
 	t1 := ticker.NewTicker(atm1)
 	t2 := ticker.NewTicker(atm2)
-	go t2.Run()
-	go t1.Run()
+	t3 := ticker.NewTicker(atm3)
+	go t1.Run(path)
+	go t2.Run(path)
+	go t3.Run(path)
 
-	time.Sleep(tickTask)
-	fmt.Println("Просим тикер остановиться")
-	t1.Ticker.Stop()
-	t1.Ticker.Stop()
-	fmt.Println("Ticker stopped")
 
-	fmt.Println("вышли в основной код")
-	fmt.Println(atm1.CashOut[0].Loaded)
-	fmt.Println(atm2.CashOut[0].Loaded)
+	// work time
+	time.Sleep(waitTime)
+
+	t1.Ticker.Stop()
+	t2.Ticker.Stop()
+	t3.Ticker.Stop()
+	log.Println("all ATMs work stopped")
+
 }
 
 /*
